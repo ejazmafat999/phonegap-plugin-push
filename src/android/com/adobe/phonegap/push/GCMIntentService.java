@@ -339,12 +339,12 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         /*
          * Notification add actions
          */
-        createActions(extras, mBuilder, resources, packageName, notId);
+        createActions(extras, mBuilder, resources, packageName, notId,requestCode);
 
         mNotificationManager.notify(appName, notId, mBuilder.build());
     }
 
-    private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName, int notId) {
+    private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName, int notId,int requestCode) {
         Log.d(LOG_TAG, "create actions");
         String actions = extras.getString(ACTIONS);
         if (actions != null) {
@@ -363,14 +363,14 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                         intent.putExtra(PUSH_BUNDLE, extras);
                         intent.putExtra(FOREGROUND, foreground);
                         intent.putExtra(NOT_ID, notId);
-                        pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        pIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     } else {
                         intent = new Intent(this, BackgroundActionButtonHandler.class);
                         intent.putExtra(CALLBACK, action.getString(CALLBACK));
                         intent.putExtra(PUSH_BUNDLE, extras);
                         intent.putExtra(FOREGROUND, foreground);
                         intent.putExtra(NOT_ID, notId);
-                        pIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        pIntent = PendingIntent.getBroadcast(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     }
 
                     mBuilder.addAction(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
